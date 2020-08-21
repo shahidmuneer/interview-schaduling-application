@@ -53,13 +53,12 @@
                                     <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('user_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.users.destroy', $user->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                   
+                                    {!! Form::open()->method("DELETE")
+                                        ->route('admin.roles.destroy',["role"=>$user->id])!!}
+                                        <!-- ->onsubmit('return confirm('".trans("quickadmin.qa_are_you_sure")')!!} -->
+                                        <input type='submit' class="btn btn-xs btn-danger" value="DELETE" onclilck="return confirm('Are you sure you want to delete this?')">
+                                           {!! Form::close() !!}
                                     @endcan
                                 </td>
                 </tr>

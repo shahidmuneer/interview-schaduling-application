@@ -102,17 +102,17 @@ class Appointment extends Model
     
     public function client()
     {
-        return $this->belongsTo(Client::class, 'client_id')->withTrashed();
+        return $this->belongsTo(client::class, 'client_id');
     }
     
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id')->withTrashed();
+        return $this->belongsTo(\App\User::class, 'employee_id',"id");
     }
 	
     public function service()
     {
-        return $this->belongsTo(Service::class, 'service_id')->withTrashed();
+        return $this->belongsTo(Service::class, 'service_id');
     }	
     
 }

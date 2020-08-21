@@ -4,15 +4,18 @@
     <h3 class="page-title">@lang('quickadmin.appointments.title')</h3>
     @can('appointment_create')
         <p>
-            <a href="{{ route('admin.appointments.create') }}"
-               class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+        <a href="/appointments/settings"
+               class="btn btn-success">SETTINGS</a>
 
         </p>
     @endcan
+    
 
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css' />
 
-    <div id='calendar'></div>
+    <div id='calendar'>
+    
+    </div>
 
     <br />
 
@@ -43,23 +46,30 @@
                 </thead>
 
                 <tbody>
+                    
                 @if (count($appointments) > 0)
                     @foreach ($appointments as $appointment)
                         <tr data-entry-id="{{ $appointment->id }}">
+                            
                             @can('appointment_delete')
                                 <td></td>
                             @endcan
-
-                            <td>{{ $appointment->client->first_name or '' }}</td>
+                            
+                            
+                            <td>{{ $appointment->client?? '' }}</td>
+                          
+                            
                             <td>{{ isset($appointment->client) ? $appointment->client->last_name : '' }}</td>
                             <td>{{ isset($appointment->client) ? $appointment->client->phone : '' }}</td>
                             <td>{{ isset($appointment->client) ? $appointment->client->email : '' }}</td>
-                            <td>{{ $appointment->employee->first_name or '' }}</td>
+                            
+                            <td>{{ $appointment->employee->first_name ??'' }}</td>
                             <td>{{ isset($appointment->employee) ? $appointment->employee->last_name : '' }}</td>
                             <td>{{ $appointment->start_time }}</td>
                             <td>{{ $appointment->finish_time }}</td>
                             <td>{!! $appointment->comments !!}</td>
                             <td>
+                                
                                 @can('appointment_view')
                                     <a href="{{ route('admin.appointments.show',[$appointment->id]) }}"
                                        class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
@@ -69,18 +79,13 @@
                                        class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                 @endcan
                                 @can('appointment_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.appointments.destroy', $appointment->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                  
                                 @endcan
                             </td>
                         </tr>
                     @endforeach
                 @else
+                
                     <tr>
                         <td colspan="9">@lang('quickadmin.qa_no_entries_in_table')</td>
                     </tr>
@@ -110,12 +115,12 @@
                 events : [
                         @foreach($appointments as $appointment)
                     {
-                        title : '{{ $appointment->client->first_name . ' ' . $appointment->client->last_name }}',
+                        title : '{{ $appointment->employee->first_name . ' '.$appointment->employee->last_name.' ' . $appointment->employee->mobile_number }}',
                         start : '{{ $appointment->start_time }}',
                         @if ($appointment->finish_time)
                                 end: '{{ $appointment->finish_time }}',
                         @endif
-                        url : '{{ route('admin.appointments.edit', $appointment->id) }}'
+                        url : '{{ route('admin.appointments.show', $appointment->id) }}'
                     },
                     @endforeach
                 ]

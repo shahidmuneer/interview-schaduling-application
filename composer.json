@@ -6,11 +6,14 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "authy/php": "^3.0",
+        "doctrine/dbal": "^2.5",
+        "intervention/image": "^2.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.3",
-        "intervention/image": "^2.3",
-        "doctrine/dbal": "^2.5"
+        "netojose/laravel-bootstrap-4-forms": "^3.0",
+        "twilio/sdk": "^6.9"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

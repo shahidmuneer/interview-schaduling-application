@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAppointmentsRequest;
+use App\Http\Requests\Admin\StoreAppointmentsSettingsRequest;
 use App\Http\Requests\Admin\UpdateAppointmentsRequest;
 
 class AppointmentsController extends Controller
@@ -21,10 +22,99 @@ class AppointmentsController extends Controller
         if (! Gate::allows('appointment_access')) {
             return abort(401);
         }
-
-        $appointments = Appointment::all();
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
+        }
+        $appointments = Appointment::with(["employee"])->get();
 
         return view('admin.appointments.index', compact('appointments'));
+    }
+    public function settings(){
+        if (! Gate::allows('appointment_access')) {
+            return abort(401);
+        }
+        // $data=file_get_contents(storage_path("/app/private/settings"));
+        // $data=json_decode($data);
+
+        // $data=file_get_contents(storage_path("/app/private/settings"));
+        // $data=json_decode($data);
+       
+        
+        
+        return view("admin.appointments.settings");
+
+    }
+    
+    
+    private function addMinutesToTime($time,$minutes){
+        
+        return date("g:i a", strtotime($time)+($minutes*60) );
+    }
+
+    private function convertToAlias($time){
+        return date("g:i a", strtotime($time));
+    }
+    private function getNextDay($date){
+        return date("d-m-Y",strtotime($date."+1 days"));
+    }
+    private function checkIfWeekend($curdate){
+        $mydate=getdate(strtotime($curdate));
+        $weekend=false;
+    switch($mydate['wday']){
+        case 0: // sun
+            $weekend=true;
+            break;
+        case 1: 
+        case 2:    
+        case 3:
+        case 4:
+        case 5:
+        case 6: // sat
+            $weekend=true;
+            break;
+    }
+    return $weekend;
+    }
+
+    public function storeSettings(StoreAppointmentsSettingsRequest $request){
+
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
+        }
+        // file_put_contents(storage_path("/app/private/settings"),json_encode($request->all()));
+        $from_date=date("d-m-Y",strtotime($request->input("from_date")) );
+        $to_date=date("d-m-Y",strtotime($request->input("to_date")) );
+        $from_time=$request->input("from_time");
+        $to_time=$request->input("to_time");
+        $hours=$request->input("hours");
+        \App\Settings::truncate();
+        \App\AppointmentsSetting::truncate();
+
+       $settings= \App\Settings::create([
+            "from_date"=>$request->input("from_date"),
+            "to_date"=>$request->input("to_date"),
+            "from_time"=>$request->input("from_time"),
+            "to_time"=>$request->input("to_time"),
+            "hours"=>$request->input("hours")
+        ]);
+        $dates=[];
+        for($date=$from_date;strtotime($date)<=strtotime($to_date);$date=$this->getNextDay($date) ){
+            // $dates[]=["date"=>$date,"status"=>""];
+          
+            for($time=$from_time;
+            date("H:i",strtotime($time))<=date("H:i",strtotime($to_time));
+                $time=$this->addMinutesToTime($time,(int)$request->input("hours")) ){
+                    \App\AppointmentsSetting::create([
+                        "date"=>date("Y-m-d",strtotime($date)),
+                        "time"=>$time,
+                        "setting_id"=>$settings->id
+                    ]);
+                    // $dates[]=["date"=>$date,"time"=>$time];
+            }
+        }
+        // dd($dates);
+
+        return redirect()->route('admin.appointments.index')->withErrors(["message"=>"Settings Saved Successfully!"]);
     }
 
     /**
@@ -36,6 +126,9 @@ class AppointmentsController extends Controller
     {
         if (! Gate::allows('appointment_create')) {
             return abort(401);
+        }
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
         }
         $relations = [
             'clients' => \App\Client::get(),
@@ -83,6 +176,9 @@ class AppointmentsController extends Controller
      */
     public function edit($id)
     {
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
+        }
         if (! Gate::allows('appointment_edit')) {
             return abort(401);
         }
@@ -108,6 +204,9 @@ class AppointmentsController extends Controller
         if (! Gate::allows('appointment_edit')) {
             return abort(401);
         }
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
+        }
         $appointment = Appointment::findOrFail($id);
         $appointment->update($request->all());
 
@@ -125,17 +224,17 @@ class AppointmentsController extends Controller
      */
     public function show($id)
     {
+        if(\Auth::user()->role_id==2){
+            return redirect(route("redirect-pending"));
+        }
         if (! Gate::allows('appointment_view')) {
             return abort(401);
         }
-        $relations = [
-            'clients' => \App\Client::get()->pluck('first_name', 'id')->prepend('Please select', ''),
-            'employees' => \App\Employee::get()->pluck('first_name', 'id')->prepend('Please select', ''),
-        ];
+        
 
-        $appointment = Appointment::findOrFail($id);
-
-        return view('admin.appointments.show', compact('appointment') + $relations);
+        $appointment = Appointment::with(["employee","employee.refs","employee.address"])->findOrFail($id);
+// dd($appointment->employee->Address);
+        return view('admin.appointments.show', compact('appointment'));
     }
 
 
@@ -168,7 +267,6 @@ class AppointmentsController extends Controller
         }
         if ($request->input('ids')) {
             $entries = Appointment::whereIn('id', $request->input('ids'))->get();
-
             foreach ($entries as $entry) {
                 $entry->delete();
             }

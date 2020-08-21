@@ -3,7 +3,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class AnswerStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,14 +23,10 @@ class UserStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|max:16',
-            'last_name' => 'required|max:16',
-            'middle_name' => 'required|max:16',
-            'email' => 'required|email|unique:users,email',
-            "agreement"=>"required",
-            'password' => 'required',
-            
-            
+            'employment' => 'required',
+            'residence' => 'required',
+            'available_hours' => 'required|max:32',
+            'good_fit' => 'required|max:255'
         ];
     }
 }

@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class StoreAppointmentsSettingsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,14 +23,11 @@ class UserStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|max:16',
-            'last_name' => 'required|max:16',
-            'middle_name' => 'required|max:16',
-            'email' => 'required|email|unique:users,email',
-            "agreement"=>"required",
-            'password' => 'required',
-            
-            
+            "from_date"=>"required|date",
+            "to_date"=>"required|date",
+            "from_time"=>"required",
+            "to_time"=>"required",
+            "hours"=>"required"
         ];
     }
 }

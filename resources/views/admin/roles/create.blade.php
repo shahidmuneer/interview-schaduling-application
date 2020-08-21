@@ -12,21 +12,14 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('title', 'Title*', ['class' => 'control-label']) !!}
-                    {!! Form::text('title', old('title'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('title'))
-                        <p class="help-block">
-                            {{ $errors->first('title') }}
-                        </p>
-                    @endif
+                   
+                    {!!Form::text("title","Title")!!}
                 </div>
             </div>
             
         </div>
     </div>
-
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+<input type="submit" class="btn btn-primary">
     {!! Form::close() !!}
 @stop
 

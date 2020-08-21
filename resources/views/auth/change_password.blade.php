@@ -11,7 +11,7 @@
             </div>
         </div>
     @else
-        {!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password']]) !!}
+        {!! Form::open()->method("PATCH")->route("auth.change_password") !!}
         <!-- If no success message in flash session show change password form  -->
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -21,46 +21,27 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 form-group">
-                        {!! Form::label('current_password', 'Current password*', ['class' => 'control-label']) !!}
-                        {!! Form::password('current_password', ['class' => 'form-control', 'placeholder' => '']) !!}
-                        <p class="help-block"></p>
-                        @if($errors->has('current_password'))
-                            <p class="help-block">
-                                {{ $errors->first('current_password') }}
-                            </p>
-                        @endif
+                       {!! Form::text('current_password',"Current Password")->type("password") !!}
+                     
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-xs-12 form-group">
-                        {!! Form::label('new_password', 'New password*', ['class' => 'control-label']) !!}
-                        {!! Form::password('new_password', ['class' => 'form-control', 'placeholder' => '']) !!}
-                        <p class="help-block"></p>
-                        @if($errors->has('new_password'))
-                            <p class="help-block">
-                                {{ $errors->first('new_password') }}
-                            </p>
-                        @endif
+                    {!! Form::text('new_password',"New Password")->type("password") !!}
+                     
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-xs-12 form-group">
-                        {!! Form::label('new_password_confirmation', 'New password confirmation*', ['class' => 'control-label']) !!}
-                        {!! Form::password('new_password_confirmation', ['class' => 'form-control', 'placeholder' => '']) !!}
-                        <p class="help-block"></p>
-                        @if($errors->has('new_password_confirmation'))
-                            <p class="help-block">
-                                {{ $errors->first('new_password_confirmation') }}
-                            </p>
-                        @endif
+                    {!! Form::text('new_password_confirmation',"New Password Confirmation")->type("password") !!}
+                     
                     </div>
                 </div>
             </div>
         </div>
-
-        {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+<input type="submit" class="btn btn-primary">
         {!! Form::close() !!}
     @endif
 @stop

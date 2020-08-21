@@ -14,38 +14,38 @@
             </li>
             
             @can('client_access')
-            <li class="{{ $request->segment(2) == 'clients' ? 'active' : '' }}">
+            <!-- <li class="{{ $request->segment(2) == 'clients' ? 'active' : '' }}">
                 <a href="{{ route('admin.clients.index') }}">
                     <i class="fa fa-user"></i>
                     <span class="title">@lang('quickadmin.clients.title')</span>
                 </a>
-            </li>
+            </li> -->
             @endcan
             
             @can('employee_access')
-            <li class="{{ $request->segment(2) == 'employees' ? 'active' : '' }}">
+            <!-- <li class="{{ $request->segment(2) == 'employees' ? 'active' : '' }}">
                 <a href="{{ route('admin.employees.index') }}">
                     <i class="fa fa-suitcase"></i>
                     <span class="title">@lang('quickadmin.employees.title')</span>
                 </a>
-            </li>
+            </li> -->
             @endcan
             
             @can('working_hour_access')
-            <li class="{{ $request->segment(2) == 'working_hours' ? 'active' : '' }}">
+            <!-- <li class="{{ $request->segment(2) == 'working_hours' ? 'active' : '' }}">
                 <a href="{{ route('admin.working_hours.index') }}">
                     <i class="fa fa-hourglass"></i>
                     <span class="title">@lang('quickadmin.working-hours.title')</span>
                 </a>
-            </li>
+            </li> -->
             @endcan
             @can('service_access')
-            <li class="{{ $request->segment(2) == 'services' ? 'active' : '' }}">
+            {{-- <li class="{{ $request->segment(2) == 'services' ? 'active' : '' }}">
                 <a href="{{ route('admin.services.index') }}">
                     <i class="fa fa-hourglass"></i>
                     <span class="title">@lang('quickadmin.services.title')</span>
                 </a>
-            </li>
+            </li> --}}
             @endcan			
             
             @can('appointment_access')
@@ -99,7 +99,7 @@
             </li>
 
             <li>
-                <a href="#logout" onclick="$('#logout').submit();">
+                <a href="/logout">
                     <i class="fa fa-arrow-left"></i>
                     <span class="title">@lang('quickadmin.qa_logout')</span>
                 </a>
